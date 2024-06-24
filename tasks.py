@@ -3,7 +3,9 @@ from pathlib import Path
 from robocorp import workitems
 from robocorp.tasks import get_output_dir, task
 from RPA.Excel.Files import Files as Excel
+from selenium import webdriver
 
+from pages import ApNewsPage
 
 @task
 def producer():
@@ -30,15 +32,39 @@ def producer():
 @task
 def consumer():
     """Process all the produced input Work Items from the previous step."""
+
+    driver = webdriver.Chrome()
+
+    ap_news = ApNewsPage(driver)
+    ap_news.open()
+
     for item in workitems.inputs:
         try:
-            name = item.payload["Name"]
-            zipcode = item.payload["Zip"]
-            product = item.payload["Product"]
-            print(f"Processing order: {name}, {zipcode}, {product}")
-            assert 1000 <= zipcode <= 9999, "Invalid ZIP code"
+            keyword = item.payload["keyword"]
+            category = item.payload["category"]
+            months_to_extract = item.payload["months_to_extract"]
+
+            ap_news.search_keyword(keyword)
+            ap_news.search_category(category)
+            
+
+
             item.done()
         except AssertionError as err:
             item.fail("BUSINESS", code="INVALID_ORDER", message=str(err))
         except KeyError as err:
             item.fail("APPLICATION", code="MISSING_FIELD", message=str(err))
+
+
+def open_news_page():
+    pass
+
+# def search_for_keyword():
+#     pass
+
+def search_for_category():
+    pass
+
+def scrape_news(months=0):
+    pass
+

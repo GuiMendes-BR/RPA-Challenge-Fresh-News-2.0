@@ -1,73 +1,73 @@
 [
   {
     "payload": {
-      "Name": "Sol Heaton",
-      "Zip": 3695,
-      "Product": "Sauce Labs Bolt T-Shirt"
+      "keyword": "Sol Heaton",
+      "months_to_extract": 3695,
+      "category": "Sauce Labs Bolt T-Shirt"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Gregg Arroyo",
-      "Zip": 4418,
-      "Product": "Sauce Labs Onesie"
+      "keyword": "Gregg Arroyo",
+      "months_to_extract": 4418,
+      "category": "Sauce Labs Onesie"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Zoya Roche",
-      "Zip": 3013,
-      "Product": "Sauce Labs Bolt T-Shirt"
+      "keyword": "Zoya Roche",
+      "months_to_extract": 3013,
+      "category": "Sauce Labs Bolt T-Shirt"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Gregg Arroyo",
-      "Zip": 4418,
-      "Product": "Sauce Labs Bolt T-Shirt"
+      "keyword": "Gregg Arroyo",
+      "months_to_extract": 4418,
+      "category": "Sauce Labs Bolt T-Shirt"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Camden Martin",
-      "Zip": 1196,
-      "Product": "Sauce Labs Bolt T-Shirt"
+      "keyword": "Camden Martin",
+      "months_to_extract": 1196,
+      "category": "Sauce Labs Bolt T-Shirt"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Zoya Roche",
-      "Zip": 3013,
-      "Product": "Sauce Labs Fleece Jacket"
+      "keyword": "Zoya Roche",
+      "months_to_extract": 3013,
+      "category": "Sauce Labs Fleece Jacket"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Zoya Roche",
-      "Zip": 3013,
-      "Product": "Sauce Labs Onesie"
+      "keyword": "Zoya Roche",
+      "months_to_extract": 3013,
+      "category": "Sauce Labs Onesie"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Sol Heaton",
-      "Zip": 3695,
-      "Product": "Sauce Labs Fleece Jacket"
+      "keyword": "Sol Heaton",
+      "months_to_extract": 3695,
+      "category": "Sauce Labs Fleece Jacket"
     },
     "files": {}
   },
   {
     "payload": {
-      "Name": "Sol Heaton",
-      "Zip": 3695,
-      "Product": "Sauce Labs Onesee"
+      "keyword": "Sol Heaton",
+      "months_to_extract": 3695,
+      "category": "Sauce Labs Onesee"
     },
     "files": {}
   }
