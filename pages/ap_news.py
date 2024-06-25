@@ -53,7 +53,7 @@ class ApNewsPage(BasePage):
         # convert date from string to object
         if re.match(r"\d+ hours? ago", date):
             delta = int(re.match(r"\d+", date)[0])
-            date = datetime.datetime.now() - datetime.timedelta(hours=delta)
+            date = datetime.datetime.today() - datetime.timedelta(hours=delta)
         elif date == "Yesterday":
             delta = 1
             date = datetime.datetime.today() - datetime.timedelta(days=delta)
@@ -69,10 +69,11 @@ class ApNewsPage(BasePage):
 
     def _download_picture(self, picture, title):
         # Download picture
-        image_name = f"{title}.jpg"
+        image_name = "".join(x for x in title if x.isalnum() or x == " ")
+        image_name = f"{image_name}.jpg"
 
         image_data = requests.get(picture).content
-        with open(f'output/{image_name}', 'wb') as handler:
+        with open(f'output/pictures/{image_name}', 'wb') as handler:
             handler.write(image_data)
 
         return image_name

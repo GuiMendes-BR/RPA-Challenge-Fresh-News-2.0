@@ -52,7 +52,7 @@ def consumer():
             ap_news.sort_by('Newest')
             news = ap_news.scrape_news(months_to_extract)
             table = build_table(news, keyword)
-            
+            table.to_excel(f"output/News for {keyword}.xlsx")
 
 
             item.done()
@@ -65,7 +65,10 @@ def count_keyword(row, column, keyword):
     return row[column].count(keyword)
 
 def contains_money(row, column):
-    return bool(re.match('\$?(\d{1,3}[\,\.]?)+(dollars|USD)?', row[column]))
+    return bool(
+        re.search('\$(\d{1,3}[\,\.]?)+', row[column]) or
+        re.search('\d+\sdollars|USD', row[column])
+    )
  
 def build_table(news, keyword):
     df = pd.DataFrame([one_news.model_dump() for one_news in news])
