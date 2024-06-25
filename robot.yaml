@@ -19,3 +19,6 @@ PYTHONPATH:
   - .
 ignoreFiles:
   - .gitignore
+
+# Robot specific configurations
+apNewsUrl: "https://apnews.com/"

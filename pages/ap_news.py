@@ -9,11 +9,12 @@ import time
 from bs4 import BeautifulSoup
 import re
 from robocorp import log
+from config import config
 
 class ApNewsPage(BasePage):
 
     # Configuração
-    URL = "https://apnews.com/"
+    URL = config['apNewsUrl']
 
     def open(self):
         log.info(f"Opening URL {self.URL}...")
@@ -76,7 +77,7 @@ class ApNewsPage(BasePage):
         image_name = f"{image_name}.jpg"
 
         image_data = requests.get(picture).content
-        with open(f'output/pictures/{image_name}', 'wb') as handler:
+        with open(f'{config['artifactsDir']}/pictures/{image_name}', 'wb') as handler:
             handler.write(image_data)
 
         log.info(f"Picture saved as {image_name}.")
