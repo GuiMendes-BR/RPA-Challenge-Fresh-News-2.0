@@ -1,73 +1,9 @@
 [
   {
     "payload": {
-      "keyword": "Sol Heaton",
-      "months_to_extract": 3695,
-      "category": "Sauce Labs Bolt T-Shirt"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Gregg Arroyo",
-      "months_to_extract": 4418,
-      "category": "Sauce Labs Onesie"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Zoya Roche",
-      "months_to_extract": 3013,
-      "category": "Sauce Labs Bolt T-Shirt"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Gregg Arroyo",
-      "months_to_extract": 4418,
-      "category": "Sauce Labs Bolt T-Shirt"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Camden Martin",
-      "months_to_extract": 1196,
-      "category": "Sauce Labs Bolt T-Shirt"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Zoya Roche",
-      "months_to_extract": 3013,
-      "category": "Sauce Labs Fleece Jacket"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Zoya Roche",
-      "months_to_extract": 3013,
-      "category": "Sauce Labs Onesie"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Sol Heaton",
-      "months_to_extract": 3695,
-      "category": "Sauce Labs Fleece Jacket"
-    },
-    "files": {}
-  },
-  {
-    "payload": {
-      "keyword": "Sol Heaton",
-      "months_to_extract": 3695,
-      "category": "Sauce Labs Onesee"
+      "keyword": "Ukraine",
+      "months_to_extract": 1,
+      "category": ""
     },
     "files": {}
   }

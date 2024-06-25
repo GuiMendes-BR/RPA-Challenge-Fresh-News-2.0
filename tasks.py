@@ -4,6 +4,8 @@ from robocorp import workitems
 from robocorp.tasks import get_output_dir, task
 from RPA.Excel.Files import Files as Excel
 from selenium import webdriver
+import pandas as pd
+import re
 
 from pages import ApNewsPage
 
@@ -45,7 +47,11 @@ def consumer():
             months_to_extract = item.payload["months_to_extract"]
 
             ap_news.search_keyword(keyword)
-            ap_news.search_category(category)
+            if category != "":
+                ap_news.search_category(category)
+            ap_news.sort_by('Newest')
+            news = ap_news.scrape_news(months_to_extract)
+            table = build_table(news, keyword)
             
 
 
@@ -55,16 +61,21 @@ def consumer():
         except KeyError as err:
             item.fail("APPLICATION", code="MISSING_FIELD", message=str(err))
 
+def count_keyword(row, column, keyword):
+    return row[column].count(keyword)
 
-def open_news_page():
-    pass
+def contains_money(row, column):
+    return bool(re.match('\$?(\d{1,3}[\,\.]?)+(dollars|USD)?', row[column]))
+ 
+def build_table(news, keyword):
+    df = pd.DataFrame([one_news.model_dump() for one_news in news])
 
-# def search_for_keyword():
-#     pass
+    # Calculate count fields
+    df['count_of_keyword_in_title'] = df.apply(lambda row: count_keyword(row, column='title', keyword=keyword), axis=1)
+    df['count_of_keyword_in_description'] = df.apply(lambda row: count_keyword(row, column='description', keyword=keyword), axis=1)
+    
+    # Calculate money fields
+    df['title_contains_money'] =  df.apply(lambda row: contains_money(row, column='title'), axis=1)
+    df['description_contains_money'] =  df.apply(lambda row: contains_money(row, column='description'), axis=1)
 
-def search_for_category():
-    pass
-
-def scrape_news(months=0):
-    pass
-
+    return df

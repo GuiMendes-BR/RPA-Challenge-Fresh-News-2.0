@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from typing import Tuple
 from selenium import webdriver
@@ -20,7 +21,17 @@ class BasePage(object):
     def type_text(self, by_locator: Tuple[str, By], text: str) -> None:
         """ Performs text entry of the passed in text, in a web element whose locator is passed to it"""
         self.driver.find_element(*by_locator).send_keys(text)
-    
+
+    def select(self, by_locator: Tuple[str, By], text: str):
+        select = Select(self.driver.find_element(*by_locator))
+        select.select_by_visible_text(text)
+
+    def read_text(self, by_locator: Tuple[str, By]):
+        return self.driver.find_element(*by_locator).text
+
+    def find_elements(self, by_locator: Tuple[str, By]):
+        return self.driver.find_elements(*by_locator)
+
     def exists(self, by_locator: Tuple[str, By]):
         try:
             self.driver.find_element(*by_locator)
