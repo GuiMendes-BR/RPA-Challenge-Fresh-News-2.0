@@ -1,50 +1,30 @@
-from pathlib import Path
-
 from robocorp import workitems
-from robocorp.tasks import get_output_dir, task
-from RPA.Excel.Files import Files as Excel
+from robocorp.tasks import task
 from selenium import webdriver
 import pandas as pd
 import re
+from robocorp import log
 
 from pages import ApNewsPage
-
-@task
-def producer():
-    """Split Excel rows into multiple output Work Items for the next step."""
-    output = get_output_dir() or Path("output")
-    filename = "orders.xlsx"
-
-    for item in workitems.inputs:
-        path = item.get_file(filename, output / filename)
-
-        excel = Excel()
-        excel.open_workbook(path)
-        rows = excel.read_worksheet_as_table(header=True)
-
-        for row in rows:
-            payload = {
-                "Name": row["Name"],
-                "Zip": row["Zip"],
-                "Product": row["Item"],
-            }
-            workitems.outputs.create(payload)
-
 
 @task
 def consumer():
     """Process all the produced input Work Items from the previous step."""
 
+    log.info("Starting Execution!")
     driver = webdriver.Chrome()
-
+    
+    log.info("Opening ApNews...")
     ap_news = ApNewsPage(driver)
     ap_news.open()
 
     for item in workitems.inputs:
         try:
+            log.info(f"Reading payload {item.payload}...")
             keyword = item.payload["keyword"]
             category = item.payload["category"]
             months_to_extract = item.payload["months_to_extract"]
+
 
             ap_news.search_keyword(keyword)
             if category != "":
@@ -60,6 +40,12 @@ def consumer():
             item.fail("BUSINESS", code="INVALID_ORDER", message=str(err))
         except KeyError as err:
             item.fail("APPLICATION", code="MISSING_FIELD", message=str(err))
+        except NotImplementedError as err:
+            item.fail("BUSINESS", code="SCENARIO_NOT_IMPLEMENTED", message=str(err))
+        except SystemError as err:
+            item.fail("APPLICATION", code="SYSTEM_ERROR", message=str(err))
+        except Exception as err:
+            item.fail("APPLICATION", code="UNKNOWN_ERROR", message=str(err))
 
 def count_keyword(row, column, keyword):
     return row[column].count(keyword)
