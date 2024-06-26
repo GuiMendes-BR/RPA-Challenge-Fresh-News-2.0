@@ -10,22 +10,22 @@ from bs4 import BeautifulSoup
 import re
 from robocorp import log
 from config import config
+from locators import ApNewsLocators, NewsLocators
 
 class ApNewsPage(BasePage):
 
-    # Configuração
     URL = config['apNewsUrl']
 
-    def open(self):
-        log.info(f"Opening URL {self.URL}...")
-        self.driver.get(self.URL)
-        self.driver.maximize_window()
+    # def open(self):
+    #     log.info(f"Opening URL {self.URL}...")
+    #     self.driver.get(self.URL)
+    #     self.driver.maximize_window()
 
     def search_keyword(self, keyword):
         log.info(f"Searching keyword {keyword}...")
         self.click(ApNewsLocators.SEARCH_BUTTON)
-        self.type_text(ApNewsLocators.INPUT_SEARCH, keyword)
-        self.send_keys(ApNewsLocators.INPUT_SEARCH, Keys.RETURN)
+        self.input_text(ApNewsLocators.INPUT_SEARCH, keyword)
+        self.press_key(ApNewsLocators.INPUT_SEARCH, Keys.RETURN)
 
     def search_category(self, category):
         log.info(f"Searching category {category}...")
@@ -40,13 +40,14 @@ class ApNewsPage(BasePage):
             self.click(ApNewsLocators.CATEGORY(category))
             # Wait for page to load
             self.exists(ApNewsLocators.SELECTED_FILTERS_LABEL)
+            self.wait_page_load()
         else:
             raise AssertionError("Category not found")
         
     def sort_by(self, text):
         log.info(f"Setting sort by as {text}...")
         self.select(ApNewsLocators.SORT_BY_SELECT, text)
-        time.sleep(3)
+        self.wait_page_load()
 
     def _convert_date(self, date):
         # convert date from string to object
@@ -77,7 +78,8 @@ class ApNewsPage(BasePage):
         image_name = f"{image_name}.jpg"
 
         image_data = requests.get(picture).content
-        with open(f'{config['artifactsDir']}/pictures/{image_name}', 'wb') as handler:
+        artifacts_dir = config['artifactsDir']
+        with open(f'{artifacts_dir}/pictures/{image_name}', 'wb') as handler:
             handler.write(image_data)
 
         log.info(f"Picture saved as {image_name}.")
@@ -96,7 +98,7 @@ class ApNewsPage(BasePage):
 
         # Variables related to the pagination feature
         continue_paginating = True
-        current_page, total_pages = self.read_text(ApNewsLocators.PAGINATION_COUNT).split(' of ')
+        current_page, total_pages = self.get_text(ApNewsLocators.PAGINATION_COUNT).split(' of ')
         current_page, total_pages = int(current_page), int(total_pages)
 
 
@@ -104,18 +106,18 @@ class ApNewsPage(BasePage):
             # For each page we extract the page html, feed it into Beautiful Soup
             # And finally select the list of news in current page 
             log.info(f"Processing page {current_page}...")
-            html = self.driver.page_source
+            html = self.selenium.driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-            news_elements = soup.select(ApNewsLocators.NEWS_BLOCK[1])
+            news_elements = soup.select(NewsLocators.NEWS_BLOCK)
 
             # For each news we need to extract Title, Date, Description and Picture
             for news_element in news_elements:
                 # Title
-                title = news_element.select_one(ApNewsLocators.NEWS_TITLE[1]).getText()
+                title = news_element.select_one(NewsLocators.NEWS_TITLE).getText()
                 log.info(f"Processing news with title {title}...")
                 
                 # Date
-                date = news_element.select_one(ApNewsLocators.NEWS_DATE[1])
+                date = news_element.select_one(NewsLocators.NEWS_DATE)
                 if date is None:
                     # Some news don't have date. In that case I skip it because the age of the news is relevant 
                     # for this process.
@@ -125,7 +127,7 @@ class ApNewsPage(BasePage):
                 date = self._convert_date(date)
                 
                 # Description
-                description = news_element.select_one(ApNewsLocators.NEWS_DESCRIPTION[1])
+                description = news_element.select_one(NewsLocators.NEWS_DESCRIPTION)
                 if description is not None: # Some news don't have description
                     description = description.getText()
                 else:
@@ -133,7 +135,7 @@ class ApNewsPage(BasePage):
                 
                 
                 # Picture
-                picture = news_element.select_one(ApNewsLocators.NEWS_PICTURE[1])
+                picture = news_element.select_one(NewsLocators.NEWS_PICTURE)
                 if picture is not None: # Some news don't have pictures
                     picture = picture['src']
                     picture = self._download_picture(picture, title)
@@ -169,36 +171,13 @@ class ApNewsPage(BasePage):
                 log.info("Going to next page...")
                 current_page +=1
                 self.click(ApNewsLocators.PAGINATION_NEXT_PAGE)
-                current_page_in_ap_news, _ = self.read_text(ApNewsLocators.PAGINATION_COUNT).split(' of ')
+                current_page_in_ap_news, _ = self.get_text(ApNewsLocators.PAGINATION_COUNT).split(' of ')
                 current_page_in_ap_news = int(current_page_in_ap_news)
 
                 if current_page != current_page_in_ap_news:
                     raise SystemError("Bot tried to paginate but application did not go to the next page")
 
         return all_news
-        
-
-class ApNewsLocators():
-    # This object has all the selectors for ApNews. I prefer writing XPATHS but Beautiful Soup
-    # Accepts only CSS SELECTORS by default :c
-    # In bigger projects I like putting the locators in a separate folder but since we have only one page for
-    # this project I decided leaving it here for simplicity reasons.
-    SEARCH_BUTTON = (By.XPATH, '//button[@class="SearchOverlay-search-button"]')
-    INPUT_SEARCH = (By.XPATH, '//input[@class="SearchOverlay-search-input"]')
-    CATEGORY_DROP_DOWN = (By.XPATH, '//div[@class="SearchFilter-heading"]')
-    SELECTED_FILTERS_LABEL = (By.XPATH, '//div[@class="SearchResultsModule-filters-selected-title"][text()="Selected Filters"]')
-    SORT_BY_SELECT = (By.XPATH, '//span[text()="Sort by"]/../select')
-    NEWS_BLOCK = (By.CSS_SELECTOR, 'div.SearchResultsModule-results div.PagePromo')
-    NEWS_TITLE = (By.CSS_SELECTOR, 'div.PagePromo-title > a > span')
-    NEWS_DATE = (By.CSS_SELECTOR, 'div.PagePromo-date span span')
-    NEWS_DESCRIPTION = (By.CSS_SELECTOR, 'div.PagePromo-description a span.PagePromoContentIcons-text')
-    NEWS_PICTURE = (By.CSS_SELECTOR, 'div.PagePromo-media a picture img')
-    PAGINATION_NEXT_PAGE = (By.XPATH, '//div[@class="Pagination-nextPage"]/a')
-    PAGINATION_COUNT = (By.XPATH, '//div[@class="Pagination-pageCounts"]')
-
-    def CATEGORY(category):
-        return (By.XPATH, f'//div[@class="CheckboxInput"]/label/span[contains(text(), "{category}")]/../input')
-
 
 class News(BaseModel):
     title: str  

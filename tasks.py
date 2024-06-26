@@ -1,10 +1,10 @@
 from robocorp import workitems
 from robocorp.tasks import task
-from selenium import webdriver
 import pandas as pd
 import re
 from robocorp import log
 from config import config
+from RPA.Browser.Selenium import Selenium
 
 from pages import ApNewsPage
 
@@ -13,11 +13,11 @@ def consumer():
     """Process all the produced input Work Items from the previous step."""
 
     log.info("Starting Execution!")
-    driver = webdriver.Chrome()
+    selenium = Selenium()
 
     log.info("Opening ApNews...")
-    ap_news = ApNewsPage(driver)
-    ap_news.open()
+    ap_news = ApNewsPage(selenium)
+    # ap_news.open()
 
     for item in workitems.inputs:
         try:

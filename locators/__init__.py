@@ -1,0 +1,1 @@
+from .locators import ApNewsLocators, NewsLocators

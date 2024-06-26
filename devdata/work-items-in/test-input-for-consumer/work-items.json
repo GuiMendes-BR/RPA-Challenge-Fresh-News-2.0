@@ -2,7 +2,7 @@
   {
     "payload": {
       "keyword": "Ukraine",
-      "months_to_extract": 1,
+      "months_to_extract": 3,
       "category": ""
     },
     "files": {}

@@ -1,42 +1,56 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support import expected_conditions as EC
-from typing import Tuple
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from RPA.Browser.Selenium import Selenium
+from time import sleep
 
 
 class BasePage(object):
     """Base class to initialize the base page that will be called from all
     pages"""
 
-    def __init__(self, driver: webdriver):
-        self.driver = driver
+    URL = None
 
-    def click(self, by_locator: Tuple[str, By]) -> None:
+    def __init__(self, selenium: Selenium):
+        self.selenium = selenium
+
+        self._open()
+        self._configure_selenium()
+
+    def _open(self):
+        self.selenium.open_chrome_browser(self.URL)
+        self.selenium.maximize_browser_window()
+
+    def _configure_selenium(self):
+        # self.selenium.set_selenium_timeout(30)
+        # self.selenium.set_browser_implicit_wait(30)
+        self.selenium.set_selenium_implicit_wait(30)
+
+    def click(self, locator: str) -> None:
         """ Performs click on web element whose locator is passed to it"""
-        self.driver.find_element(*by_locator).click()
+        self.selenium.click_element_when_clickable(locator)
     
-    def type_text(self, by_locator: Tuple[str, By], text: str) -> None:
+    def input_text(self, locator: str, text: str) -> None:
         """ Performs text entry of the passed in text, in a web element whose locator is passed to it"""
-        self.driver.find_element(*by_locator).send_keys(text)
+        self.selenium.input_text_when_element_is_visible(locator, text)
 
-    def select(self, by_locator: Tuple[str, By], text: str):
-        select = Select(self.driver.find_element(*by_locator))
-        select.select_by_visible_text(text)
+    def select(self, locator: str, text: str):
+        self.selenium.select_from_list_by_label(locator, text)
 
-    def read_text(self, by_locator: Tuple[str, By]):
-        return self.driver.find_element(*by_locator).text
+    def get_text(self, locator: str):
+        return self.selenium.get_text(locator)
 
-    def find_elements(self, by_locator: Tuple[str, By]):
-        return self.driver.find_elements(*by_locator)
-
-    def exists(self, by_locator: Tuple[str, By]):
-        try:
-            self.driver.find_element(*by_locator)
-        except NoSuchElementException:
-            return False
-        return True
+    def exists(self, locator: str):
+        return self.selenium.is_element_visible(locator)
     
-    def send_keys(self, by_locator: Tuple[str, By], key) -> None:
-        self.driver.find_element(*by_locator).send_keys(key)
+    def press_key(self, locator: str, key) -> None:
+        self.selenium.press_key(locator, key)
+
+    def wait_page_load(self, wait_for = 30):
+        page_state = None
+        count = 0
+        while page_state != 'complete':
+            count +=1
+            page_state = self.selenium.driver.execute_script('return document.readyState;')
+            sleep(1)
+            if count > wait_for:
+                break
+
+        return page_state == 'complete'

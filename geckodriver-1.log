@@ -1,0 +1,19 @@
+1719346765953	geckodriver	INFO	Listening on 127.0.0.1:63133
+1719346768990	mozrunner::runner	INFO	Running command: "C:\\Users\\guigo\\.cache\\selenium\\firefox\\win64\\127.0.2\\firefox.exe" "--marionette" "--remote-debuggin ... 4" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\guigo\\AppData\\Local\\Temp\\rust_mozprofilezq266y"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+Dynamically enable window occlusion 0
+1719346770161	Marionette	INFO	Marionette enabled
+1719346770414	Marionette	INFO	Listening on port 63156
+WebDriver BiDi listening on ws://127.0.0.1:63134
+Read port: 63156
+1719346770598	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:63134/devtools/browser/5d6f3ab6-6e35-4904-854c-811890e03e76
+1719346800923	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-WCZ03SZFCQ, line 613: Script terminated by timeout at:
+get@https://www.googletagmanager.com/gtag/js?id=G-WCZ03SZFCQ:613:115
+stop@https://www.googletagmanager.com/gtag/js?id=G-WCZ03SZFCQ:613:87
+ca.Ik/c/<@https://www.googletagmanager.com/gtag/js?id=G-WCZ03SZFCQ:613:412
+
+1719346817715	Marionette	INFO	Stopped listening on port 63156
+Dynamically enable window occlusion 1
