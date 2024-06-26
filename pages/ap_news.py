@@ -79,7 +79,7 @@ class ApNewsPage(BasePage):
 
         image_data = requests.get(picture).content
         artifacts_dir = config['artifactsDir']
-        with open(f'{artifacts_dir}/pictures/{image_name}', 'wb') as handler:
+        with open(f'{artifacts_dir}/{image_name}', 'wb') as handler:
             handler.write(image_data)
 
         log.info(f"Picture saved as {image_name}.")
