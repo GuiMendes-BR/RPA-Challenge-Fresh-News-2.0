@@ -71,6 +71,7 @@ def build_table(news, keyword):
     - title_contains_money
     - description_contains_money
     """
+    log.info("Buildind table...")
     df = pd.DataFrame([one_news.model_dump() for one_news in news])
 
     # Calculate count fields
@@ -88,5 +89,6 @@ def zip_pictures(keyword):
     pictures_dir = config['picturesDir']
     artifacts_dir = config['artifactsDir']
     if (Path.cwd() / pictures_dir).exists():
+        log.info("Zipping pictures to file...")
         shutil.make_archive(f'{artifacts_dir}/Pictures for {keyword}', 'zip', pictures_dir)
         shutil.rmtree(pictures_dir)
