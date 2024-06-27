@@ -1,10 +1,10 @@
 from RPA.Browser.Selenium import Selenium
-from time import sleep
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from config import config
 
+from time import sleep
+
+from config import config
 
 
 class BasePage(object):

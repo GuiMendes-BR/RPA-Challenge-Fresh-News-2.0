@@ -1,16 +1,16 @@
-from selenium.webdriver.common.by import By
-from pages.base import BasePage
-from selenium.webdriver.common.keys import Keys
-from pydantic import BaseModel, PositiveInt
-import datetime
-from dateutil.relativedelta import relativedelta
-import requests
-import time
-from bs4 import BeautifulSoup
-import re
 from robocorp import log
+from selenium.webdriver.common.keys import Keys
+
+import re
+import datetime
+import requests
+from bs4 import BeautifulSoup
+from pydantic import BaseModel
+from dateutil.relativedelta import relativedelta
+
 from config import config
 from locators import ApNewsLocators, NewsLocators
+from pages.base import BasePage
 
 class News(BaseModel):
     """News pydantic model to ensure data consistency."""

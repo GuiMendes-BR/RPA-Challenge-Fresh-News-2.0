@@ -1,13 +1,13 @@
 from robocorp import workitems
 from robocorp.tasks import task
-import pandas as pd
-import re
 from robocorp import log
-from config import config
 from RPA.Browser.Selenium import Selenium
 
+import pandas as pd
+import re
 
 from pages import ApNewsPage
+from config import config
 
 @task
 def consumer():

@@ -1,10 +1,6 @@
 [
   {
-    "payload": {
-      "keyword": "Ukraine",
-      "months_to_extract": 3,
-      "category": ""
-    },
+    "payload": 	{"keyword":"Plaestine","months_to_extract":12,"category":""},
     "files": {}
   }
 ]
