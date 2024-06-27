@@ -88,5 +88,5 @@ def zip_pictures(keyword):
     pictures_dir = config['picturesDir']
     artifacts_dir = config['artifactsDir']
     if (Path.cwd() / pictures_dir).exists():
-        shutil.make_archive(f'{artifacts_dir}/Pictures for {keyword}.zip', 'zip', pictures_dir)
+        shutil.make_archive(f'{artifacts_dir}/Pictures for {keyword}', 'zip', pictures_dir)
         shutil.rmtree(pictures_dir)
