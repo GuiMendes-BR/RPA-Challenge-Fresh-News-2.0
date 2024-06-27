@@ -155,20 +155,6 @@ class ApNewsPage(BasePage):
                     date = date.getText()
                 date = self._convert_date(date)
                 
-                # Description
-                description = news_element.select_one(NewsLocators.NEWS_DESCRIPTION[1])
-                if description is not None: # Some news don't have description
-                    description = description.getText()
-                else:
-                    description = ""
-                
-                
-                # Picture
-                picture = news_element.select_one(NewsLocators.NEWS_PICTURE[1])
-                if picture is not None: # Some news don't have pictures
-                    picture = picture['src']
-                    picture = self._download_picture(picture, title)
-                
                 # We're only interested in news up to a cutoff date.
                 # Since we'are ordering the list from newest news to oldest, we assume that
                 # If we've reached the cutoff date, there's nothing more that we're interested into
@@ -176,6 +162,19 @@ class ApNewsPage(BasePage):
                     log.info("We've reached the cutoff date, stop paginating!")
                     continue_paginating = False
                     break
+
+                # Description
+                description = news_element.select_one(NewsLocators.NEWS_DESCRIPTION[1])
+                if description is not None: # Some news don't have description
+                    description = description.getText()
+                else:
+                    description = ""
+                
+                # Picture
+                picture = news_element.select_one(NewsLocators.NEWS_PICTURE[1])
+                if picture is not None: # Some news don't have pictures
+                    picture = picture['src']
+                    picture = self._download_picture(picture, title)
 
 
                 # We finally append a new news to the list
