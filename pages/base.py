@@ -1,6 +1,7 @@
 from RPA.Browser.Selenium import Selenium
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 from time import sleep
 
@@ -63,9 +64,10 @@ class BasePage(object):
         try:
             self.wait.until(EC.presence_of_element_located(by_locator))
             return True
-        except TimeoutError as err:
+        except TimeoutException:
             return False
     
+
     def press_key(self, by_locator, key) -> None:
         """Sends a special Key to element"""
         element = self.wait.until(EC.presence_of_element_located(by_locator))
