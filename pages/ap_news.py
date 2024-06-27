@@ -108,7 +108,7 @@ class ApNewsPage(BasePage):
         # Example: If we receive 0 or 1 - only the current month, 2 - current and previous month, 3 - current and two previous months
         cutoff_month_and_year = datetime.datetime.now() - relativedelta(months=months_to_extract-1) 
         # set cutoff date as day 01 of 'months_to_extract' months ago
-        cutoff_date = datetime.date(cutoff_month_and_year.year, cutoff_month_and_year.month, 1) 
+        cutoff_date = datetime.datetime(cutoff_month_and_year.year, cutoff_month_and_year.month, 1) 
         log.info(f"Setting cutoff date as {cutoff_date}")
 
         all_news = []
