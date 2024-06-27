@@ -23,3 +23,4 @@ ignoreFiles:
 # Robot specific configurations
 apNewsUrl: "https://apnews.com/"
 seleniumWaitTimeOut: 30
+picturesDir: output/pictures

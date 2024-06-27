@@ -5,6 +5,8 @@ from RPA.Browser.Selenium import Selenium
 
 import pandas as pd
 import re
+import shutil
+from pathlib import Path
 
 from pages import ApNewsPage
 from config import config
@@ -35,6 +37,7 @@ def consumer():
             news = ap_news.scrape_news(months_to_extract)
             table = build_table(news, keyword)
             table.to_excel(f"{config['artifactsDir']}/News for {keyword}.xlsx")
+            zip_pictures(keyword)
 
 
             item.done()
@@ -79,3 +82,11 @@ def build_table(news, keyword):
     df['description_contains_money'] =  df.apply(lambda row: contains_money(row, column='description'), axis=1)
 
     return df
+
+def zip_pictures(keyword):
+    """Zips the pictures to a single file and the deletes the pictures folder"""
+    pictures_dir = config['picturesDir']
+    artifacts_dir = config['artifactsDir']
+    if (Path.cwd() / pictures_dir).exists():
+        shutil.make_archive(f'{artifacts_dir}/Pictures for {keyword}.zip', 'zip', pictures_dir)
+        shutil.rmtree(pictures_dir)

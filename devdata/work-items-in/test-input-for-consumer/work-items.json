@@ -1,6 +1,6 @@
 [
   {
-    "payload": 	{"keyword":"Palestine","months_to_extract":12,"category":""},
+    "payload": 	{"keyword":"Palestine","months_to_extract":1,"category":""},
     "files": {}
   }
 ]

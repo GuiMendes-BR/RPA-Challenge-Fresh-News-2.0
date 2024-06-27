@@ -1,6 +1,8 @@
 from robocorp import log
 from selenium.webdriver.common.keys import Keys
 
+import os
+from pathlib import Path
 import re
 import datetime
 import requests
@@ -90,13 +92,17 @@ class ApNewsPage(BasePage):
     def _download_picture(self, picture, title):
         """Runs a web request to download the piture to the artifacts output dir"""
         log.info(f"Downloading picture {picture}...")
+        # Create Folder if it doesn't exists
+        pictures_dir = config['picturesDir']
+        if not (Path.cwd() / pictures_dir).exists():
+            os.makedirs(pictures_dir)
+
         # Download picture
         image_name = "".join(x for x in title if x.isalnum() or x == " ")
         image_name = f"{image_name}.jpg"
 
         image_data = requests.get(picture).content
-        artifacts_dir = config['artifactsDir']
-        with open(f'{artifacts_dir}/{image_name}', 'wb') as handler:
+        with open(f'{pictures_dir}/{image_name}', 'wb') as handler:
             handler.write(image_data)
 
         log.info(f"Picture saved as {image_name}.")
