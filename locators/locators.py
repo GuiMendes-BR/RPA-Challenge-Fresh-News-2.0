@@ -1,22 +1,22 @@
+from selenium.webdriver.common.by import By
+
 class ApNewsLocators():
-    # This object has all the selectors for ApNews. I prefer writing XPATHS but Beautiful Soup
-    # Accepts only CSS SELECTORS by default :c
-    # In bigger projects I like putting the locators in a separate folder but since we have only one page for
-    # this project I decided leaving it here for simplicity reasons.
-    SEARCH_BUTTON = '//button[@class="SearchOverlay-search-button"]'
-    INPUT_SEARCH = '//input[@class="SearchOverlay-search-input"]'
-    CATEGORY_DROP_DOWN = '//div[@class="SearchFilter-heading"]'
-    SELECTED_FILTERS_LABEL = '//div[@class="SearchResultsModule-filters-selected-title"][text()="Selected Filters"]'
-    SORT_BY_SELECT = '//span[text()="Sort by"]/../select'
-    PAGINATION_NEXT_PAGE = '//div[@class="Pagination-nextPage"]/a'
-    PAGINATION_COUNT = '//div[@class="Pagination-pageCounts"]'
+    """Locators for the search page of Ap News"""
+    SEARCH_BUTTON = (By.XPATH, '//button[@class="SearchOverlay-search-button"]')
+    INPUT_SEARCH = (By.XPATH, '//input[@class="SearchOverlay-search-input"]')
+    CATEGORY_DROP_DOWN = (By.XPATH, '//div[@class="SearchFilter-heading"]')
+    SELECTED_FILTERS_LABEL = (By.XPATH, '//div[@class="SearchResultsModule-filters-selected-title"][text()="Selected Filters"]')
+    SORT_BY_SELECT = (By.XPATH, '//span[text()="Sort by"]/../select')
+    PAGINATION_NEXT_PAGE = (By.XPATH, '//div[@class="Pagination-nextPage"]/a')
+    PAGINATION_COUNT = (By.XPATH, '//div[@class="Pagination-pageCounts"]')
 
     def CATEGORY(category):
-        return f'//div[@class="CheckboxInput"]/label/span[contains(text(), "{category}")]/../input'
+        return (By.XPATH, f'//div[@class="CheckboxInput"]/label/span[contains(text(), "{category}")]/../input')
 
 class NewsLocators():
-    NEWS_BLOCK = 'div.SearchResultsModule-results div.PagePromo'
-    NEWS_TITLE = 'div.PagePromo-title > a > span'
-    NEWS_DATE = 'div.PagePromo-date span span'
-    NEWS_DESCRIPTION = 'div.PagePromo-description a span.PagePromoContentIcons-text'
-    NEWS_PICTURE = 'div.PagePromo-media a picture img'
+    """Locators for each individual news block."""
+    NEWS_BLOCK = (By.CSS_SELECTOR, 'div.SearchResultsModule-results div.PagePromo')
+    NEWS_TITLE = (By.CSS_SELECTOR, 'div.PagePromo-title > a > span')
+    NEWS_DATE = (By.CSS_SELECTOR, 'div.PagePromo-date span span')
+    NEWS_DESCRIPTION = (By.CSS_SELECTOR, 'div.PagePromo-description a span.PagePromoContentIcons-text')
+    NEWS_PICTURE = (By.CSS_SELECTOR, 'div.PagePromo-media a picture img')

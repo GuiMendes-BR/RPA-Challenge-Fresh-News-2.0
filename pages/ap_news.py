@@ -12,22 +12,28 @@ from robocorp import log
 from config import config
 from locators import ApNewsLocators, NewsLocators
 
+class News(BaseModel):
+    """News pydantic model to ensure data consistency."""
+    title: str  
+    date: datetime.datetime # December 14, 2023
+    description: str
+    picture: str | None
+
 class ApNewsPage(BasePage):
+    """Ap news page. It offers all the necessary methods to manipulate Ap News    """
 
     URL = config['apNewsUrl']
 
-    # def open(self):
-    #     log.info(f"Opening URL {self.URL}...")
-    #     self.driver.get(self.URL)
-    #     self.driver.maximize_window()
-
     def search_keyword(self, keyword):
+        """Inputs a search key and go to results page"""
         log.info(f"Searching keyword {keyword}...")
         self.click(ApNewsLocators.SEARCH_BUTTON)
         self.input_text(ApNewsLocators.INPUT_SEARCH, keyword)
         self.press_key(ApNewsLocators.INPUT_SEARCH, Keys.RETURN)
 
     def search_category(self, category):
+        """Searches for a category for the current news result page. 
+        Raises an AssertionError when category not found"""
         log.info(f"Searching category {category}...")
         assert category != "", "Category cannot be empty"
 
@@ -45,11 +51,15 @@ class ApNewsPage(BasePage):
             raise AssertionError("Category not found")
         
     def sort_by(self, text):
+        """Selects the Sort By function in ApNews and waits for page to load"""
         log.info(f"Setting sort by as {text}...")
         self.select(ApNewsLocators.SORT_BY_SELECT, text)
         self.wait_page_load()
 
     def _convert_date(self, date):
+        """Converts a date in ApNews to a datetime object. There are many 
+        different types of date format like 'February 28', 'February 28, 2022', 
+        'Yesterday', '8 minutes ago' and etc."""
         # convert date from string to object
         log.info(f"Converting string {date} to datetime...")
         if re.match(r"\d+ hours? ago", date):
@@ -72,6 +82,7 @@ class ApNewsPage(BasePage):
         return date
 
     def _download_picture(self, picture, title):
+        """Runs a web request to download the piture to the artifacts output dir"""
         log.info(f"Downloading picture {picture}...")
         # Download picture
         image_name = "".join(x for x in title if x.isalnum() or x == " ")
@@ -88,10 +99,16 @@ class ApNewsPage(BasePage):
 
 
     def scrape_news(self, months_to_extract):
+        """This method paginates through all news displayed in current page until it finds
+        a news that is older than 'months_to_extract'. It returns a list of news."""
         if months_to_extract == 0: months_to_extract = 1
         log.info(f"Starting to scrape news up to {months_to_extract} months old...")
 
-        cutoff_date = datetime.datetime.now() - relativedelta(months=months_to_extract)
+        # We need to subtract one to get the relativa delta.
+        # Example: If we receive 0 or 1 - only the current month, 2 - current and previous month, 3 - current and two previous months
+        cutoff_month_and_year = datetime.datetime.now() - relativedelta(months=months_to_extract-1) 
+        # set cutoff date as day 01 of 'months_to_extract' months ago
+        cutoff_date = datetime.date(cutoff_month_and_year.year, cutoff_month_and_year.month, 1) 
         log.info(f"Setting cutoff date as {cutoff_date}")
 
         all_news = []
@@ -108,16 +125,16 @@ class ApNewsPage(BasePage):
             log.info(f"Processing page {current_page}...")
             html = self.selenium.driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-            news_elements = soup.select(NewsLocators.NEWS_BLOCK)
+            news_elements = soup.select(NewsLocators.NEWS_BLOCK[1])
 
             # For each news we need to extract Title, Date, Description and Picture
             for news_element in news_elements:
                 # Title
-                title = news_element.select_one(NewsLocators.NEWS_TITLE).getText()
+                title = news_element.select_one(NewsLocators.NEWS_TITLE[1]).getText()
                 log.info(f"Processing news with title {title}...")
                 
                 # Date
-                date = news_element.select_one(NewsLocators.NEWS_DATE)
+                date = news_element.select_one(NewsLocators.NEWS_DATE[1])
                 if date is None:
                     # Some news don't have date. In that case I skip it because the age of the news is relevant 
                     # for this process.
@@ -127,7 +144,7 @@ class ApNewsPage(BasePage):
                 date = self._convert_date(date)
                 
                 # Description
-                description = news_element.select_one(NewsLocators.NEWS_DESCRIPTION)
+                description = news_element.select_one(NewsLocators.NEWS_DESCRIPTION[1])
                 if description is not None: # Some news don't have description
                     description = description.getText()
                 else:
@@ -135,7 +152,7 @@ class ApNewsPage(BasePage):
                 
                 
                 # Picture
-                picture = news_element.select_one(NewsLocators.NEWS_PICTURE)
+                picture = news_element.select_one(NewsLocators.NEWS_PICTURE[1])
                 if picture is not None: # Some news don't have pictures
                     picture = picture['src']
                     picture = self._download_picture(picture, title)
@@ -179,8 +196,3 @@ class ApNewsPage(BasePage):
 
         return all_news
 
-class News(BaseModel):
-    title: str  
-    date: datetime.datetime # December 14, 2023
-    description: str
-    picture: str | None

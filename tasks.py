@@ -6,17 +6,19 @@ from robocorp import log
 from config import config
 from RPA.Browser.Selenium import Selenium
 
+
 from pages import ApNewsPage
 
 @task
 def consumer():
-    """Process all the produced input Work Items from the previous step."""
+    """Process all the produced input Work Items."""
 
     log.info("Starting Execution!")
     selenium = Selenium()
 
     log.info("Opening ApNews...")
     ap_news = ApNewsPage(selenium)
+
     # ap_news.open()
 
     for item in workitems.inputs:
@@ -48,15 +50,24 @@ def consumer():
             item.fail("APPLICATION", code="UNKNOWN_ERROR", message=str(err))
 
 def count_keyword(row, column, keyword):
+    """Returns the count of keywords in specified column"""
     return row[column].count(keyword)
 
 def contains_money(row, column):
+    """Returns a boolean informing wether specifed column contains a monetary value
+    such as $11.1 | $111,111.11 | 11 dollars | 11 USD"""
     return bool(
         re.search('\$(\d{1,3}[\,\.]?)+', row[column]) or
         re.search('\d+\sdollars|USD', row[column])
     )
  
 def build_table(news, keyword):
+    """Builds a table based on the news list and adds four columns:
+    - count_of_keyword_in_title
+    - count_of_keyword_in_description
+    - title_contains_money
+    - description_contains_money
+    """
     df = pd.DataFrame([one_news.model_dump() for one_news in news])
 
     # Calculate count fields

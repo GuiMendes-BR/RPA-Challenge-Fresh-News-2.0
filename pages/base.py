@@ -1,5 +1,10 @@
 from RPA.Browser.Selenium import Selenium
 from time import sleep
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from config import config
+
 
 
 class BasePage(object):
@@ -9,41 +14,65 @@ class BasePage(object):
     URL = None
 
     def __init__(self, selenium: Selenium):
+        
         self.selenium = selenium
+        self.explicit_wait_timeout = config['seleniumWaitTimeOut']
 
         self._open()
         self._configure_selenium()
 
     def _open(self):
+        """Opens a new browser window with the URL specified in self.URL"""
+        
+        
         self.selenium.open_chrome_browser(self.URL)
         self.selenium.maximize_browser_window()
 
     def _configure_selenium(self):
-        # self.selenium.set_selenium_timeout(30)
-        # self.selenium.set_browser_implicit_wait(30)
-        self.selenium.set_selenium_implicit_wait(30)
+        """Sets selenium implicit wait to value in config """
+        self.selenium.set_selenium_implicit_wait(config['seleniumWaitTimeOut'])
 
-    def click(self, locator: str) -> None:
-        """ Performs click on web element whose locator is passed to it"""
-        self.selenium.click_element_when_clickable(locator)
+    @property
+    def wait(self) -> WebDriverWait:
+        """WebDriverWait object to avoid repetition """
+        return WebDriverWait(self.selenium.driver, self.explicit_wait_timeout)
+
+    def click(self, by_locator) -> None:
+        """Performs click on web element whose by_locator is passed to it"""
+        element = self.wait.until(EC.element_to_be_clickable(by_locator))
+        self.selenium.click_element_when_clickable(element)
+        
     
-    def input_text(self, locator: str, text: str) -> None:
-        """ Performs text entry of the passed in text, in a web element whose locator is passed to it"""
-        self.selenium.input_text_when_element_is_visible(locator, text)
+    def input_text(self, by_locator, text: str) -> None:
+        """Performs text entry of the passed in text, in a web element whose by_locator is passed to it"""
+        element = self.wait.until(EC.presence_of_element_located(by_locator))
+        self.selenium.input_text(element, text)
 
-    def select(self, locator: str, text: str):
-        self.selenium.select_from_list_by_label(locator, text)
+    def select(self, by_locator, text: str):
+        """Selects from a dropdown the text passed to is"""
+        element = self.wait.until(EC.presence_of_element_located(by_locator))
+        self.selenium.select_from_list_by_label(element, text)
 
-    def get_text(self, locator: str):
-        return self.selenium.get_text(locator)
+    def get_text(self, by_locator):
+        """Reads text from web element"""
+        element = self.wait.until(EC.presence_of_element_located(by_locator))
+        return self.selenium.get_text(element)
 
-    def exists(self, locator: str):
-        return self.selenium.is_element_visible(locator)
+    def exists(self, by_locator):
+        """Checks the existence of and element after timeout period"""
+        try:
+            self.wait.until(EC.presence_of_element_located(by_locator))
+            return True
+        except TimeoutError as err:
+            return False
     
-    def press_key(self, locator: str, key) -> None:
-        self.selenium.press_key(locator, key)
+    def press_key(self, by_locator, key) -> None:
+        """Sends a special Key to element"""
+        element = self.wait.until(EC.presence_of_element_located(by_locator))
+        self.selenium.press_key(element, key)
 
     def wait_page_load(self, wait_for = 30):
+        """Waits for page load"""
         page_state = None
         count = 0
         while page_state != 'complete':
