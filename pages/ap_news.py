@@ -30,7 +30,13 @@ class ApNewsPage(BasePage):
         self.click(ApNewsLocators.SEARCH_BUTTON)
         self.input_text(ApNewsLocators.INPUT_SEARCH, keyword)
         self.press_key(ApNewsLocators.INPUT_SEARCH, Keys.RETURN)
-
+        # If search drop down cannot be found on the page, some error happened.
+        if not self.exists(ApNewsLocators.CATEGORY_DROP_DOWN):
+            # Here we check if no results were loaded
+            if self.exists(ApNewsLocators.NO_RESULTS_FOUND):
+                raise AssertionError('No results found for keyword')
+            raise SystemError('Some error happened after searching for keyword')
+        
     def search_category(self, category):
         """Searches for a category for the current news result page. 
         Raises an AssertionError when category not found"""

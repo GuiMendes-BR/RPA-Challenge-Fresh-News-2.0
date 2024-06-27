@@ -9,6 +9,7 @@ class ApNewsLocators():
     SORT_BY_SELECT = (By.XPATH, '//span[text()="Sort by"]/../select')
     PAGINATION_NEXT_PAGE = (By.XPATH, '//div[@class="Pagination-nextPage"]/a')
     PAGINATION_COUNT = (By.XPATH, '//div[@class="Pagination-pageCounts"]')
+    NO_RESULTS_FOUND = (By.XPATH, '//div[@class="SearchResultsModule-noResults"][contains(text(), "There are no results that match")]')
 
     def CATEGORY(category):
         return (By.XPATH, f'//div[@class="CheckboxInput"]/label/span[contains(text(), "{category}")]/../input')
